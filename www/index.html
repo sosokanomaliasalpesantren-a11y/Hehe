@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Are you gay?</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      background: #0d001a;
+      color: #ff4d4d;
+      font-family: Arial, Helvetica, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      cursor: default;
+    }
+    h1 {
+      font-size: 5rem;
+      margin: 0 0 60px 0;
+      text-shadow: 0 0 20px rgba(255, 77, 77, 0.7);
+      user-select: none;
+    }
+    .buttons {
+      position: relative;
+      width: 500px;
+      height: 120px;
+    }
+    button {
+      position: absolute;
+      width: 220px;
+      height: 100px;
+      font-size: 3rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all 0.15s;
+      user-select: none;
+    }
+    #yes {
+      background: #4caf50;
+      color: white;
+      left: 0;
+    }
+    #yes:hover {
+      background: #66bb6a;
+      transform: scale(1.08);
+    }
+    #no {
+      background: #e53935;
+      color: white;
+      right: 0;
+    }
+  </style>
+</head>
+<body>
+
+<h1>ARE YOU GAY?</h1>
+
+<div class="buttons">
+  <button id="yes">YES</button>
+  <button id="no">NO</button>
+</div>
+
+<script>
+// ----------------- Tombol NO kabur -----------------
+const noBtn = document.getElementById('no');
+
+function jauhinMouse(e) {
+  const rect = noBtn.getBoundingClientRect();
+  const mouseX = e.clientX;
+  const mouseY = e.clientY;
+
+  const btnCenterX = rect.left + rect.width / 2;
+  const btnCenterY = rect.top + rect.height / 2;
+
+  const distX = mouseX - btnCenterX;
+  const distY = mouseY - btnCenterY;
+  const distance = Math.sqrt(distX**2 + distY**2);
+
+  // kalau mouse terlalu dekat → kabur
+  if (distance < 140) {
+    let newX = btnCenterX + (distX * -3); // lari ke arah berlawanan
+    let newY = btnCenterY + (distY * -3);
+
+    // batasi biar ga keluar layar
+    newX = Math.max(110, Math.min(window.innerWidth - 110, newX));
+    newY = Math.max(110, Math.min(window.innerHeight - 110, newY));
+
+    noBtn.style.left = (newX - rect.width/2) + 'px';
+    noBtn.style.top  = (newY - rect.height/2) + 'px';
+    noBtn.style.position = 'fixed';
+  }
+}
+
+document.addEventListener('mousemove', jauhinMouse);
+
+// biar tombol NO juga lari kalau disentuh di hp/tablet
+noBtn.addEventListener('touchmove', (e) => {
+  e.preventDefault();
+  const touch = e.touches[0];
+  jauhinMouse({clientX: touch.clientX, clientY: touch.clientY});
+});
+
+
+// ----------------- Tombol YES → keluar + message -----------------
+document.getElementById('yes').addEventListener('click', () => {
+  // Coba tutup tab (banyak browser blokir kecuali dibuka via script)
+  window.open('', '_self').close();
+
+  // Fallback kalau gagal close
+  setTimeout(() => {
+    document.body.innerHTML = `
+      <div style="
+        height:100vh;
+        background:#000;
+        color:#ff1744;
+        font-size:5rem;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        text-align:center;
+        padding:0 20px;
+      ">
+        Hahahaha, You are gay forever! 🏳️‍🌈
+      </div>
+    `;
+    
+    // Coba lempar ke rickroll juga biar tambah savage (optional)
+    // setTimeout(() => { window.location = "https://youtu.be/dQw4w9WgXcQ"; }, 1800);
+  }, 300);
+});
+
+</script>
+</body>
+</html>
